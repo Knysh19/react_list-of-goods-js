@@ -20,7 +20,7 @@ export const App = () => {
   const [sortType, setSortType] = useState(null);
   const [isReversed, setIsReversed] = useState(false);
 
-  const applySort = (type) => {
+  const applySort = type => {
     const sortedGoods = [...goodsFromServer];
 
     if (type === 'alphabetical') {
@@ -38,10 +38,27 @@ export const App = () => {
   };
 
   const handleReverse = () => {
-    const reversedGoods = [...goods].reverse();
+    const newReversed = !isReversed;
 
-    setGoods(reversedGoods);
-    setIsReversed(!isReversed);
+    setIsReversed(newReversed);
+
+    let sortedGoods = [...goodsFromServer];
+
+    if (sortType === 'alphabetical') {
+      sortedGoods.sort((a, b) => a.localeCompare(b));
+    } else if (sortType === 'length') {
+      sortedGoods.sort((a, b) => a.length - b.length);
+    }
+
+    if (newReversed) {
+      sortedGoods.reverse();
+    }
+
+    if (!sortType) {
+      sortedGoods = [...goods].reverse();
+    }
+
+    setGoods(sortedGoods);
   };
 
   const handleReset = () => {
@@ -98,7 +115,9 @@ export const App = () => {
 
       <ul>
         {goods.map(good => (
-          <li key={good} data-cy="Good">{good}</li>
+          <li key={good} data-cy="Good">
+            {good}
+          </li>
         ))}
       </ul>
     </div>
